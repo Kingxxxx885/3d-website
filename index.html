@@ -2,265 +2,780 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dino Color Run</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gerardo's Cyber-Dino</title>
     <style>
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-pink: #ff00c1;
+            --neon-green: #39ff14;
+        }
+
         body {
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f0f0f0; /* Light gray background */
-            font-family: 'Courier New', Courier, monospace; /* Classic game font */
-            overflow: hidden; /* Prevent scrolling */
+            background-color: #020617;
+            font-family: 'Segoe UI', 'Courier New', monospace;
+            overflow: hidden;
+            color: white;
+            transition: background 1s ease;
         }
 
         #game-container {
             position: relative;
-            width: 800px;
-            height: 250px;
-            background-color: #f7f7f7; /* Slightly darker gray for game area */
-            border: 2px solid #535353; /* Dark gray border */
-            overflow: hidden; /* Clip game elements within bounds */
+            width: 95%;
+            max-width: 800px;
+            height: 300px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            overflow: hidden;
         }
 
-        canvas {
-            display: block; /* Remove any default margins/padding */
-        }
-
-        #score-container {
+        #ui-layer {
             position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 20px;
-            color: #535353;
-            font-weight: bold;
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            box-sizing: border-box;
+            z-index: 10;
         }
 
-        #game-over-message {
+        .score-box {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* LEVEL UP NOTIFICATION */
+        #level-up {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 20%;
+            font-size: 2rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 15px var(--neon-green);
+            display: none;
+            z-index: 15;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        #game-over {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            display: none; /* Initially hidden */
+            display: none;
+            z-index: 20;
+            background: rgba(2, 6, 23, 0.95);
+            padding: 30px;
+            border: 3px solid var(--neon-pink);
+            border-radius: 20px;
+            box-shadow: 0 0 50px var(--neon-pink);
         }
 
-        #game-over-message h1 {
-            font-size: 40px;
-            color: #d9534f; /* Reddish color for Game Over */
-            margin-bottom: 10px;
-        }
-
-        #game-over-message p {
-            font-size: 18px;
-            color: #535353;
-        }
-
-        #restart-button {
+        #restart-btn {
             margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #5cb85c; /* Green for restart */
-            color: white;
+            padding: 12px 30px;
+            background: var(--neon-blue);
             border: none;
+            color: #020617;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
+            transition: 0.3s;
         }
+
+        #restart-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        canvas { display: block; }
+        
+        .hint { margin-top: 15px; color: #475569; font-style: italic; }
     </style>
 </head>
 <body>
 
-<div id="game-container">
-    <div id="score-container">Score: <span id="score">0</span></div>
-    <div id="game-over-message">
-        <h1>GAME OVER</h1>
-        <p>Your Final Score: <span id="final-score">0</span></p>
-        <button id="restart-button">Restart</button>
+    <div id="game-container">
+        <div id="ui-layer">
+            <div class="score-box">BEST: <span id="hi-score">0</span></div>
+            <div class="score-box">SCORE: <span id="score">0</span></div>
+        </div>
+
+        <div id="level-up">LEVEL UP!</div>
+
+        <div id="game-over">
+            <h1 style="color: var(--neon-pink); margin: 0;">SYSTEM OVERLOAD</h1>
+            <p style="font-size: 1.5rem;">SCORE: <span id="final-score">0</span></p>
+            <button id="restart-btn">REBOOT ENGINE</button>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
     </div>
-    <canvas id="gameCanvas" width="800" height="250"></canvas>
-</div>
+
+    <p class="hint">Tap Screen or Space to Jump</p>
 
 <script>
-    // Game constants and variables
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const scoreElement = document.getElementById('score');
-    const gameOverMessage = document.getElementById('game-over-message');
-    const finalScoreElement = document.getElementById('final-score');
-    const restartButton = document.getElementById('restart-button');
+    const scoreEl = document.getElementById('score');
+    const hiScoreEl = document.getElementById('hi-score');
+    const gameOverEl = document.getElementById('game-over');
+    const levelUpEl = document.getElementById('level-up');
+    const finalScoreEl = document.getElementById('final-score');
+    const restartBtn = document.getElementById('restart-btn');
 
-    const GRAVITY = 0.8;
-    const JUMP_FORCE = -15;
-    const GROUND_HEIGHT = 20;
-    const GAME_SPEED = 5;
+    function resize() {
+        canvas.width = document.getElementById('game-container').clientWidth;
+        canvas.height = 300;
+    }
+    window.onresize = resize;
+    resize();
 
-    let dino = {
-        x: 50,
-        y: canvas.height - GROUND_HEIGHT - 50, // Initial position, adjusting for ground
-        width: 44, // Dino dimensions (can be adjusted)
-        height: 47,
-        velocityY: 0,
-        isJumping: false,
-        color: '#ff6347' // Tomato color for dino
-    };
-
-    let obstacles = [];
+    let gravity = 0.7;
+    let jumpForce = -13;
     let score = 0;
+    let hiScore = 0;
     let isGameOver = false;
-    let gameLoopId;
+    let obstacles = [];
+    let gameSpeed = 7;
+    let level = 1;
 
-    // Obstacle types and properties
-    const obstacleTypes = [
-        { width: 25, height: 50, color: '#4682b4', type: 'cactus' }, // SteelBlue
-        { width: 50, height: 35, color: '#32cd32', type: 'low-obstacle' }, // LimeGreen
-        { width: 40, height: 40, color: '#ba55d3', type: 'mid-obstacle' } // MediumOrchid
-    ];
+    let dino = { x: 50, y: 0, w: 50, h: 50, dy: 0, jump: false, emoji: "🦖" };
 
-    function startGame() {
-        dino.y = canvas.height - GROUND_HEIGHT - dino.height;
-        dino.velocityY = 0;
-        dino.isJumping = false;
+    function spawnObstacle() {
+        if(isGameOver) return;
+        const types = [
+            { e: "🌵", c: "#39ff14" },
+            { e: "⚡", c: "#fff01f" },
+            { e: "🛸", c: "#00f2ff" },
+            { e: "💀", c: "#ff00c1" }
+        ];
+        const t = types[Math.floor(Math.random() * types.length)];
+        obstacles.push({ x: canvas.width, y: canvas.height - 65, w: 45, h: 45, emoji: t.e, color: t.c });
+    }
+
+    function init() {
+        dino.y = canvas.height - dino.h - 10;
+        dino.dy = 0;
         obstacles = [];
         score = 0;
+        level = 1;
+        gameSpeed = 7;
         isGameOver = false;
-        scoreElement.innerText = score;
-        gameOverMessage.style.display = 'none';
-        
-        // Input handling
-        document.addEventListener('keydown', handleInput);
-        document.addEventListener('touchstart', handleInput); // Support mobile tap
-
-        gameLoopId = requestAnimationFrame(gameLoop);
+        gameOverEl.style.display = "none";
+        document.body.style.background = "#020617";
+        animate();
     }
 
-    function handleInput(e) {
-        // Jump on Spacebar, Up Arrow, or Touch screen
-        if (!isGameOver && (e.code === 'Space' || e.code === 'ArrowUp' || e.type === 'touchstart')) {
-            if (!dino.isJumping) {
-                dino.velocityY = JUMP_FORCE;
-                dino.isJumping = true;
-            }
-            // Prevent default behavior (like page scroll)
-            if(e.code) e.preventDefault();
+    function checkLevelUp() {
+        if (score > 0 && score % 10 === 0) {
+            level++;
+            gameSpeed += 1;
+            levelUpEl.style.display = "block";
+            setTimeout(() => { levelUpEl.style.display = "none"; }, 1000);
+            
+            // Visual Level Up Effect
+            const colors = ["#020617", "#1e1b4b", "#312e81", "#1e293b"];
+            document.body.style.background = colors[level % colors.length];
         }
     }
 
-    function gameLoop() {
+    function animate() {
         if (isGameOver) return;
-
-        update();
-        draw();
-
-        gameLoopId = requestAnimationFrame(gameLoop);
-    }
-
-    function update() {
-        // Update Dino mechanics
-        dino.velocityY += GRAVITY;
-        dino.y += dino.velocityY;
-
-        // Ground collision
-        const groundY = canvas.height - GROUND_HEIGHT - dino.height;
-        if (dino.y > groundY) {
-            dino.y = groundY;
-            dino.velocityY = 0;
-            dino.isJumping = false;
-        }
-
-        // Generate obstacles sporadically
-        if (Math.random() < 0.015 && obstacles.length < 3) {
-            generateObstacle();
-        }
-
-        // Update and check for obstacle collisions
-        for (let i = 0; i < obstacles.length; i++) {
-            let obs = obstacles[i];
-            obs.x -= GAME_SPEED;
-
-            // Collision detection
-            if (checkCollision(dino, obs)) {
-                endGame();
-                return; // Stop further updates
-            }
-
-            // Remove off-screen obstacles and increase score
-            if (obs.x + obs.width < 0) {
-                obstacles.splice(i, 1);
-                i--; // Adjust index after removal
-                score++;
-                scoreElement.innerText = score;
-            }
-        }
-    }
-
-    function draw() {
-        // Clear canvas
+        requestAnimationFrame(animate);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw ground line
+        // Ground Neon Line
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "cyan";
+        ctx.strokeStyle = "cyan";
+        ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.moveTo(0, canvas.height - GROUND_HEIGHT);
-        ctx.lineTo(canvas.width, canvas.height - GROUND_HEIGHT);
-        ctx.strokeStyle = '#535353';
-        ctx.lineWidth = 2;
+        ctx.moveTo(0, canvas.height - 10);
+        ctx.lineTo(canvas.width, canvas.height - 10);
         ctx.stroke();
+        ctx.shadowBlur = 0;
 
-        // Draw Dino (as a simple colored rectangle)
-        ctx.fillStyle = dino.color;
-        ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
-
-        // Draw Obstacles (as simple colored rectangles)
-        for (let obs of obstacles) {
-            ctx.fillStyle = obs.color;
-            ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+        // Dino Physics
+        if (dino.jump) {
+            dino.dy += gravity;
+            dino.y += dino.dy;
         }
-    }
+        if (dino.y + dino.h > canvas.height - 10) {
+            dino.y = canvas.height - dino.h - 10;
+            dino.dy = 0;
+            dino.jump = false;
+        }
 
-    function generateObstacle() {
-        // Randomly select an obstacle type
-        const typeIndex = Math.floor(Math.random() * obstacleTypes.length);
-        const obstacleType = obstacleTypes[typeIndex];
+        ctx.font = "45px serif";
+        ctx.fillText(dino.emoji, dino.x, dino.y + 42);
 
-        let obstacle = {
-            x: canvas.width,
-            y: canvas.height - GROUND_HEIGHT - obstacleType.height,
-            width: obstacleType.width,
-            height: obstacleType.height,
-            color: obstacleType.color
-        };
-        obstacles.push(obstacle);
-    }
+        if (Math.random() < 0.012) spawnObstacle();
 
-    // AABB Collision Detection
-    function checkCollision(rect1, rect2) {
-        return (
-            rect1.x < rect2.x + rect2.width &&
-            rect1.x + rect1.width > rect2.x &&
-            rect1.y < rect2.y + rect2.height &&
-            rect1.y + rect1.height > rect2.y
-        );
+        obstacles.forEach((obs, index) => {
+            obs.x -= gameSpeed;
+            ctx.font = "40px serif";
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = obs.color;
+            ctx.fillText(obs.emoji, obs.x, obs.y + 40);
+            ctx.shadowBlur = 0;
+
+            // Hitbox check
+            if (dino.x < obs.x + obs.w - 15 && dino.x + dino.w - 15 > obs.x &&
+                dino.y < obs.y + obs.h - 5 && dino.y + dino.h > obs.y + 5) {
+                isGameOver = true;
+                endGame();
+            }
+
+            if (obs.x + obs.w < 0) {
+                obstacles.splice(index, 1);
+                score++;
+                scoreEl.innerText = score;
+                checkLevelUp();
+            }
+        });
     }
 
     function endGame() {
-        isGameOver = true;
-        cancelAnimationFrame(gameLoopId);
-        finalScoreElement.innerText = score;
-        gameOverMessage.style.display = 'block';
-        
-        // Remove event listeners when game ends
-        document.removeEventListener('keydown', handleInput);
-        document.removeEventListener('touchstart', handleInput);
+        gameOverEl.style.display = "block";
+        finalScoreEl.innerText = score;
+        if (score > hiScore) {
+            hiScore = score;
+            hiScoreEl.innerText = hiScore;
+        }
     }
 
-    restartButton.addEventListener('click', startGame);
+    function handleAction(e) {
+        if (e.type === 'keydown' && e.code !== 'Space') return;
+        if (!dino.jump && !isGameOver) {
+            dino.dy = jumpForce;
+            dino.jump = true;
+        }
+    }
 
-    // Initial game start
-    startGame();
+    window.addEventListener('keydown', handleAction);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleAction(e); });
+    restartBtn.addEventListener('click', init);
 
+    init();
 </script>
-
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
