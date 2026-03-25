@@ -3,169 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Business Website</title>
+<title>Typing Animation</title>
 
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
-}
-
-/* NAVBAR */
-.navbar {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  background: #020617;
-  padding: 15px;
-  text-align: center;
-}
-.navbar a {
-  color: white;
-  margin: 15px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-/* HERO */
-.hero {
-  padding: 120px 20px;
-  text-align: center;
-  background: linear-gradient(135deg, #3b82f6, #9333ea);
-}
-.hero h1 {
-  font-size: 2.5em;
-}
-.btn {
-  padding: 12px 25px;
-  background: #22c55e;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  color: white;
-}
-
-/* SECTION */
-.section {
-  padding: 80px 20px;
-  text-align: center;
-}
-
-/* CARDS */
-.grid {
+  height: 100vh;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-}
-.card {
-  background: rgba(255,255,255,0.05);
-  margin: 15px;
-  padding: 20px;
-  border-radius: 15px;
-  width: 260px;
-  transition: 0.3s;
-  cursor: pointer;
-}
-.card:hover {
-  transform: scale(1.05);
+  align-items: center;
+  background: #0f172a;
+  color: #22c55e;
+  font-family: monospace;
 }
 
-/* CONTACT */
-input, textarea {
-  width: 80%;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 8px;
-  border: none;
-}
-
-/* FOOTER */
-.footer {
-  padding: 20px;
-  background: #020617;
-  text-align: center;
+h1 {
+  font-size: 2.2em;
+  border-right: 3px solid #22c55e;
+  padding-right: 5px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
-<div class="navbar">
-  <a href="#home">Home</a>
-  <a href="#services">Services</a>
-  <a href="#portfolio">Portfolio</a>
-  <a href="#contact">Contact</a>
-</div>
-
-<!-- HERO -->
-<div id="home" class="hero">
-  <h1>Build Your Dream Website 🚀</h1>
-  <p>Modern, fast and high-converting websites</p>
-  <button class="btn" onclick="scrollToSection('services')">Get Started</button>
-</div>
-
-<!-- SERVICES -->
-<div id="services" class="section">
-  <h2>Our Services</h2>
-  <div class="grid">
-    <div class="card" onclick="showService('Website Design')">🌐 Website Design</div>
-    <div class="card" onclick="showService('Landing Page')">📄 Landing Pages</div>
-    <div class="card" onclick="showService('Ecommerce')">🛒 Ecommerce</div>
-  </div>
-</div>
-
-<!-- PORTFOLIO -->
-<div id="portfolio" class="section">
-  <h2>Portfolio</h2>
-  <div class="grid">
-    <div class="card" onclick="openProject()">Project 1</div>
-    <div class="card" onclick="openProject()">Project 2</div>
-    <div class="card" onclick="openProject()">Project 3</div>
-  </div>
-</div>
-
-<!-- CONTACT -->
-<div id="contact" class="section">
-  <h2>Contact Me</h2>
-
-  <input type="text" id="name" placeholder="Your Name">
-  <br>
-  <textarea id="message" placeholder="Your Message"></textarea>
-  <br>
-
-  <button class="btn" onclick="sendMessage()">Send via WhatsApp</button>
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-  © 2026 Pro Website | All Rights Reserved
-</div>
+<h1 id="typing"></h1>
 
 <script>
-function scrollToSection(id) {
-  document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+let text = "Gerardo P. De Vera Jr.";
+let index = 0;
+let speed = 100;
+
+function typeEffect() {
+  if (index < text.length) {
+    document.getElementById("typing").innerHTML += text.charAt(index);
+    index++;
+    setTimeout(typeEffect, speed);
+  }
 }
 
-function showService(service) {
-  alert("You clicked: " + service);
-}
-
-function openProject() {
-  alert("Project preview coming soon!");
-}
-
-function sendMessage() {
-  let name = document.getElementById("name").value;
-  let message = document.getElementById("message").value;
-
-  let url = "https://wa.me/639XXXXXXXXX?text="
-    + encodeURIComponent("Name: " + name + "\nMessage: " + message);
-
-  window.open(url, "_blank");
-}
+typeEffect();
 </script>
 
 </body>
