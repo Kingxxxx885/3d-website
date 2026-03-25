@@ -3,148 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerardo Sama | Portfolio Intro</title>
+    <title>Gerardo Sama | AI & Dragon Intro</title>
     <style>
         :root {
-            --primary-glow: #22c55e;
-            --secondary-glow: #3b82f6;
-            --accent-glow: #9333ea;
+            --neon-blue: #00f2ff;
+            --neon-purple: #bc13fe;
+            --dragon-green: #22c55e;
         }
 
         body {
             margin: 0;
-            padding: 0;
             height: 100vh;
-            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            background: #020617;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
-            color: white;
+            perspective: 1000px; /* Essential for 3D */
         }
 
-        /* CINEMATIC BACKGROUND EFFECTS */
-        .bg-overlay {
+        /* --- 3D FLOATING CORE --- */
+        .cube-container {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.3;
-            pointer-events: none;
+            top: 15%;
+            right: 15%;
+            width: 60px;
+            height: 60px;
+            transform-style: preserve-3d;
+            animation: rotateCube 10s infinite linear;
         }
 
-        /* DRAGON KAIJU ANIMATION */
-        .dragon-container {
+        .face {
             position: absolute;
-            width: 600px;
-            height: 600px;
-            opacity: 0.4;
-            filter: drop-shadow(0 0 30px var(--secondary-glow));
-            animation: float 8s ease-in-out infinite;
-            z-index: 1;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 242, 255, 0.1);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            50% { transform: translateY(-40px) rotate(2deg); }
+        .front  { transform: translateZ(30px); }
+        .back   { transform: rotateY(180deg) translateZ(30px); }
+        .right  { transform: rotateY(90deg) translateZ(30px); }
+        .left   { transform: rotateY(-90deg) translateZ(30px); }
+        .top    { transform: rotateX(90deg) translateZ(30px); }
+        .bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+        @keyframes rotateCube {
+            from { transform: rotateX(0) rotateY(0); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
         }
 
-        /* TYPING TEXT STYLE */
-        .text-wrapper {
-            position: relative;
-            z-index: 10;
+        /* --- AI ROBOT DRONE --- */
+        .ai-robot {
+            position: absolute;
+            left: 10%;
+            top: 20%;
+            width: 80px;
+            animation: droneFloat 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px var(--neon-purple));
+        }
+
+        .robot-eye {
+            fill: var(--neon-blue);
+            animation: blinkEye 3s infinite;
+        }
+
+        @keyframes droneFloat {
+            0%, 100% { transform: translateY(0) rotate(5deg); }
+            50% { transform: translateY(-20px) rotate(-5deg); }
+        }
+
+        @keyframes blinkEye {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0; }
+        }
+
+        /* --- DRAGON & TEXT --- */
+        .dragon-bg {
+            position: absolute;
+            width: 80%;
+            opacity: 0.2;
+            z-index: -1;
+            filter: blur(2px);
+        }
+
+        .content {
             text-align: center;
+            z-index: 10;
         }
 
         h1 {
             font-size: 3.5rem;
-            letter-spacing: 2px;
-            margin: 0;
-            background: linear-gradient(to right, #fff, var(--secondary-glow), var(--accent-glow));
+            background: linear-gradient(to right, #fff, var(--neon-blue), var(--neon-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            margin: 0;
         }
 
-        #cursor {
-            display: inline-block;
-            width: 3px;
-            height: 3.5rem;
-            background-color: var(--secondary-glow);
-            margin-left: 5px;
-            animation: blink 0.7s infinite;
-            vertical-align: middle;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        /* SUBTITLE */
-        .subtitle {
-            margin-top: 10px;
-            font-size: 1.2rem;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            opacity: 0;
-            animation: fadeIn 3s forwards 1s;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        .status-bar {
+            margin-top: 20px;
+            color: var(--dragon-green);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-overlay"></div>
-
-    <div class="dragon-container">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20,100 Q50,20 100,100 T180,100" stroke="cyan" stroke-width="2" fill="none" opacity="0.8">
-                <animate attributeName="d" values="M20,100 Q50,20 100,100 T180,100; M20,100 Q50,180 100,100 T180,100; M20,100 Q50,20 100,100 T180,100" dur="10s" repeatCount="indefinite" />
-            </path>
-            <circle cx="100" cy="100" r="40" stroke="purple" stroke-width="1" fill="none" stroke-dasharray="5,5">
-                <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="20s" repeatCount="indefinite" />
-            </circle>
-        </svg>
+    <div class="cube-container">
+        <div class="face front"></div>
+        <div class="face back"></div>
+        <div class="face right"></div>
+        <div class="face left"></div>
+        <div class="face top"></div>
+        <div class="face bottom"></div>
     </div>
 
-    <div class="text-wrapper">
-        <h1 id="typing"></h1><span id="cursor"></span>
-        <div class="subtitle">Future Software Engineer</div>
+    <svg class="ai-robot" viewBox="0 0 100 100">
+        <path d="M20 40 Q50 10 80 40 L80 70 Q50 90 20 70 Z" fill="#1e293b" stroke="#bc13fe" stroke-width="2"/>
+        <circle class="robot-eye" cx="35" cy="45" r="4"/>
+        <circle class="robot-eye" cx="65" cy="45" r="4"/>
+        <line x1="50" y1="25" x2="50" y2="10" stroke="#bc13fe" stroke-width="2"/>
+        <circle cx="50" cy="8" r="3" fill="#00f2ff"/>
+    </svg>
+
+    <svg class="dragon-bg" viewBox="0 0 200 100">
+        <path d="M10 80 Q50 10 90 80 T170 80" stroke="green" fill="none" stroke-width="0.5" stroke-dasharray="2,2"/>
+    </svg>
+
+    <div class="content">
+        <h1 id="typing"></h1>
+        <div class="status-bar">SYSTEM STATUS: ONLINE | AI PROTOCOL ACTIVE</div>
     </div>
 
     <script>
-        const nameText = "Gerardo P. De Vera Jr.";
-        const typingElement = document.getElementById("typing");
-        let charIndex = 0;
-        let isDeleting = false;
-        let typeSpeed = 150;
+        const text = "Gerardo P. De Vera Jr.";
+        let i = 0;
+        let isRemoving = false;
 
-        function playTyping() {
-            const currentDisplay = nameText.substring(0, charIndex);
-            typingElement.textContent = currentDisplay;
-
-            if (!isDeleting && charIndex < nameText.length) {
-                charIndex++;
-                typeSpeed = 150; // Normal typing speed
-            } else if (isDeleting && charIndex > 0) {
-                charIndex--;
-                typeSpeed = 75; // Faster deleting
+        function type() {
+            const el = document.getElementById('typing');
+            el.innerHTML = text.substring(0, i);
+            
+            if (!isRemoving && i < text.length) {
+                i++;
+                setTimeout(type, 150);
+            } else if (isRemoving && i > 0) {
+                i--;
+                setTimeout(type, 100);
             } else {
-                isDeleting = !isDeleting;
-                typeSpeed = 2000; // Pause at the ends
+                isRemoving = !isRemoving;
+                setTimeout(type, 2000);
             }
-
-            setTimeout(playTyping, typeSpeed);
         }
-
-        // Start the effect
-        window.onload = playTyping;
+        window.onload = type;
     </script>
 </body>
 </html>
-
