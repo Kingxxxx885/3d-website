@@ -17,12 +17,7 @@
             --border: rgba(255, 255, 255, 0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -54,7 +49,72 @@
         nav ul li a { text-decoration: none; color: var(--light); font-weight: 500; transition: 0.3s; }
         nav ul li a:hover { color: var(--primary); }
 
-        /* --- HERO SECTION --- */
+        /* --- ROBOT ASSISTANT WITH CHAT --- */
+        #robot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 100px;
+            cursor: move;
+            z-index: 9999;
+            filter: drop-shadow(0 0 15px var(--primary));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chat-bubble {
+            background: white;
+            color: var(--dark);
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            position: relative;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid white;
+        }
+
+        #robot-container:hover .chat-bubble {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .robot-head {
+            width: 40px; height: 35px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+            transition: transform 0.1s ease-out;
+        }
+
+        .robot-eye-row { display: flex; justify-content: space-around; padding-top: 10px; }
+        .robot-eye { width: 7px; height: 7px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 5px var(--primary); }
+
+        .robot-body {
+            width: 50px; height: 45px;
+            background: #cbd5e1;
+            border-radius: 10px;
+            margin-top: 2px;
+            border: 2px solid var(--secondary);
+        }
+
+        /* --- SECTIONS --- */
         .hero {
             height: 100vh;
             display: flex;
@@ -67,7 +127,7 @@
         }
 
         .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.1; margin-bottom: 20px; }
-        .hero p { font-size: 1.2rem; color: #94a3b8; max-width: 600px; margin-bottom: 30px; }
+        .hero span { color: var(--primary); }
 
         .btn {
             padding: 15px 40px;
@@ -76,74 +136,16 @@
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
-            transition: 0.3s;
             box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
         }
 
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(37, 99, 235, 0.5); }
+        .section { padding: 80px 5%; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .card { background: var(--glass); padding: 40px; border-radius: 20px; border: 1px solid var(--border); transition: 0.3s; }
+        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
 
-        /* --- SERVICES SECTION --- */
-        .section { padding: 100px 5%; text-align: center; }
-        .section h2 { font-size: 2.5rem; margin-bottom: 50px; }
+        footer { padding: 40px; text-align: center; border-top: 1px solid var(--border); color: #64748b; }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            background: var(--glass);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            transition: 0.3s;
-        }
-
-        .card:hover { border-color: var(--primary); transform: translateY(-10px); background: rgba(255,255,255,0.05); }
-        .card h3 { margin-bottom: 15px; color: var(--primary); }
-
-        /* --- PRICING --- */
-        .pricing-card {
-            background: var(--glass);
-            padding: 50px 30px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            position: relative;
-        }
-
-        .featured { border: 2px solid var(--primary); transform: scale(1.05); z-index: 10; }
-        .price { font-size: 3rem; font-weight: 800; margin: 20px 0; }
-        .price span { font-size: 1rem; color: #94a3b8; }
-
-        /* --- CONTACT FORM --- */
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-            background: var(--glass);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: left;
-        }
-
-        .input-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #94a3b8; }
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: white;
-            border-radius: 8px;
-        }
-
-        /* --- FOOTER --- */
-        footer { padding: 50px 5%; border-top: 1px solid var(--border); text-align: center; color: #64748b; }
-
-        @media (max-width: 768px) {
-            nav ul { display: none; }
-            .hero h1 { font-size: 3rem; }
-        }
     </style>
 </head>
 <body>
@@ -153,548 +155,94 @@
         <ul>
             <li><a href="#home">Home</a></li>
             <li><a href="#services">Services</a></li>
-            <li><a href="#pricing">Pricing</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
 
+    <div id="robot-container">
+        <div class="chat-bubble" id="chat-bubble">Need a website?</div>
+        <div class="robot-head" id="robot-head">
+            <div class="robot-eye-row">
+                <div class="robot-eye"></div>
+                <div class="robot-eye"></div>
+            </div>
+        </div>
+        <div class="robot-body"></div>
+    </div>
+
     <section class="hero" id="home">
-        <h1>Scale Your Vision <br>to the <span>Infinity.</span></h1>
-        <p>Expertly crafted digital solutions for high-performance businesses. Ready to dominate your market?</p>
-        <a href="#contact" class="btn">Get Started Now</a>
+        <h1>Future-Proof <br>Design <span>Infinity.</span></h1>
+        <p>High-performance builds for elite digital agencies. Drag the bot to start exploring.</p>
+        <br>
+        <a href="#contact" class="btn">Start Project</a>
     </section>
 
     <section class="section" id="services">
-        <h2>Our Specialized Services</h2>
         <div class="grid">
-            <div class="card">
-                <h3>UI/UX Design</h3>
-                <p>Creating intuitive interfaces that users love to engage with.</p>
-            </div>
-            <div class="card">
-                <h3>Web Development</h3>
-                <p>High-speed, SEO-optimized code built for maximum scalability.</p>
-            </div>
-            <div class="card">
-                <h3>AI Integration</h3>
-                <p>Leveraging cutting-edge automation to streamline your workflow.</p>
-            </div>
+            <div class="card"><h3>Ultra Fast</h3><p>Optimized for Google Core Web Vitals.</p></div>
+            <div class="card"><h3>AI Driven</h3><p>Smart components for better UX.</p></div>
+            <div class="card"><h3>Secure</h3><p>Enterprise-grade security standards.</p></div>
         </div>
     </section>
 
-    <section class="section" id="pricing" style="background: rgba(0,0,0,0.2);">
-        <h2>Simple Pricing</h2>
-        <div class="grid">
-            <div class="pricing-card">
-                <h3>Basic</h3>
-                <div class="price">$99<span>/mo</span></div>
-                <p>Single Landing Page</p>
-                <p>Basic SEO</p>
-                <p>Email Support</p>
-            </div>
-            <div class="pricing-card featured">
-                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem;">MOST POPULAR</div>
-                <h3>Growth</h3>
-                <div class="price">$299<span>/mo</span></div>
-                <p>5 Page Website</p>
-                <p>Advanced SEO</p>
-                <p>24/7 Priority Support</p>
-            </div>
-            <div class="pricing-card">
-                <h3>Enterprise</h3>
-                <div class="price">$999<span>/mo</span></div>
-                <p>Full Custom Web App</p>
-                <p>AI Automation</p>
-                <p>Dedicated Account Manager</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="contact">
-        <h2>Start Your Project</h2>
-        <div class="contact-form">
-            <div class="input-group">
-                <label>Full Name</label>
-                <input type="text" placeholder="Enter your name">
-            </div>
-            <div class="input-group">
-                <label>Email Address</label>
-                <input type="email" placeholder="email@example.com">
-            </div>
-            <div class="input-group">
-                <label>Message</label>
-                <textarea rows="5" placeholder="Tell us about your project..."></textarea>
-            </div>
-            <button class="btn" style="width: 100%; border: none; cursor: pointer;">Send Proposal</button>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 Nexus Digital Agency. Built for Performance.</p>
+    <footer id="contact">
+        <p>&copy; 2026 Nexus Digital. Expert Web Engineering.</p>
     </footer>
 
+    <script>
+        const robot = document.getElementById("robot-container");
+        const head = document.getElementById("robot-head");
+        const bubble = document.getElementById("chat-bubble");
+
+        // 1. Chat Messages Logic
+        const messages = ["Hello! 👋", "Need a hand?", "Check our work!", "Ready to scale?", "I'm draggable!"];
+        let msgIndex = 0;
+        setInterval(() => {
+            msgIndex = (msgIndex + 1) % messages.length;
+            bubble.innerText = messages[msgIndex];
+        }, 3000);
+
+        // 2. Mouse Tracking
+        document.addEventListener("mousemove", (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 40;
+            const y = (window.innerHeight / 2 - e.pageY) / 40;
+            head.style.transform = `translate(${-x}px, ${-y}px)`;
+        });
+
+        // 3. Drag Logic
+        let isDragging = false;
+        let startX, startY;
+
+        robot.onmousedown = (e) => {
+            isDragging = true;
+            startX = e.clientX - robot.offsetLeft;
+            startY = e.clientY - robot.offsetTop;
+            robot.style.transition = "none";
+        };
+
+        document.onmousemove = (e) => {
+            if (!isDragging) return;
+            robot.style.left = (e.clientX - startX) + "px";
+            robot.style.top = (e.clientY - startY) + "px";
+            robot.style.bottom = "auto";
+            robot.style.right = "auto";
+        };
+
+        document.onmouseup = () => isDragging = false;
+        
+        // Touch support
+        robot.ontouchstart = (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX - robot.offsetLeft;
+            startY = e.touches[0].clientY - robot.offsetTop;
+        };
+        document.ontouchmove = (e) => {
+            if (!isDragging) return;
+            robot.style.left = (e.touches[0].clientX - startX) + "px";
+            robot.style.top = (e.touches[0].clientY - startY) + "px";
+        };
+        document.ontouchend = () => isDragging = false;
+
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
