@@ -2,320 +2,239 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gerardo's Cyber-Dino</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Digital | Premium Solutions</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --neon-blue: #00f2ff;
-            --neon-pink: #ff00c1;
-            --neon-green: #39ff14;
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; }
+        .logo span { color: var(--primary); }
+
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 30px; }
+        nav ul li a { text-decoration: none; color: var(--light); font-weight: 500; transition: 0.3s; }
+        nav ul li a:hover { color: var(--primary); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #020617;
-            font-family: 'Segoe UI', 'Courier New', monospace;
-            overflow: hidden;
+            text-align: center;
+            padding: 0 10%;
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+        }
+
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.1; margin-bottom: 20px; }
+        .hero p { font-size: 1.2rem; color: #94a3b8; max-width: 600px; margin-bottom: 30px; }
+
+        .btn {
+            padding: 15px 40px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
             color: white;
-            transition: background 1s ease;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
         }
 
-        #game-container {
-            position: relative;
-            width: 95%;
-            max-width: 800px;
-            height: 300px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 2px solid var(--neon-blue);
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-            overflow: hidden;
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(37, 99, 235, 0.5); }
+
+        /* --- SERVICES SECTION --- */
+        .section { padding: 100px 5%; text-align: center; }
+        .section h2 { font-size: 2.5rem; margin-bottom: 50px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
         }
 
-        #ui-layer {
-            position: absolute;
-            width: 100%;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            box-sizing: border-box;
-            z-index: 10;
-        }
-
-        .score-box {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        /* LEVEL UP NOTIFICATION */
-        #level-up {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            top: 20%;
-            font-size: 2rem;
-            color: var(--neon-green);
-            text-shadow: 0 0 15px var(--neon-green);
-            display: none;
-            z-index: 15;
-            animation: pulse 0.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        #game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            display: none;
-            z-index: 20;
-            background: rgba(2, 6, 23, 0.95);
-            padding: 30px;
-            border: 3px solid var(--neon-pink);
+        .card {
+            background: var(--glass);
+            padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 0 50px var(--neon-pink);
-        }
-
-        #restart-btn {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: var(--neon-blue);
-            border: none;
-            color: #020617;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
+            border: 1px solid var(--border);
             transition: 0.3s;
         }
 
-        #restart-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px var(--neon-blue);
+        .card:hover { border-color: var(--primary); transform: translateY(-10px); background: rgba(255,255,255,0.05); }
+        .card h3 { margin-bottom: 15px; color: var(--primary); }
+
+        /* --- PRICING --- */
+        .pricing-card {
+            background: var(--glass);
+            padding: 50px 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            position: relative;
         }
 
-        canvas { display: block; }
-        
-        .hint { margin-top: 15px; color: #475569; font-style: italic; }
+        .featured { border: 2px solid var(--primary); transform: scale(1.05); z-index: 10; }
+        .price { font-size: 3rem; font-weight: 800; margin: 20px 0; }
+        .price span { font-size: 1rem; color: #94a3b8; }
+
+        /* --- CONTACT FORM --- */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--glass);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: left;
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #94a3b8; }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 8px;
+        }
+
+        /* --- FOOTER --- */
+        footer { padding: 50px 5%; border-top: 1px solid var(--border); text-align: center; color: #64748b; }
+
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            .hero h1 { font-size: 3rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div id="ui-layer">
-            <div class="score-box">BEST: <span id="hi-score">0</span></div>
-            <div class="score-box">SCORE: <span id="score">0</span></div>
+    <nav>
+        <div class="logo">NEXUS<span>DIGITAL</span></div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="home">
+        <h1>Scale Your Vision <br>to the <span>Infinity.</span></h1>
+        <p>Expertly crafted digital solutions for high-performance businesses. Ready to dominate your market?</p>
+        <a href="#contact" class="btn">Get Started Now</a>
+    </section>
+
+    <section class="section" id="services">
+        <h2>Our Specialized Services</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>UI/UX Design</h3>
+                <p>Creating intuitive interfaces that users love to engage with.</p>
+            </div>
+            <div class="card">
+                <h3>Web Development</h3>
+                <p>High-speed, SEO-optimized code built for maximum scalability.</p>
+            </div>
+            <div class="card">
+                <h3>AI Integration</h3>
+                <p>Leveraging cutting-edge automation to streamline your workflow.</p>
+            </div>
         </div>
+    </section>
 
-        <div id="level-up">LEVEL UP!</div>
-
-        <div id="game-over">
-            <h1 style="color: var(--neon-pink); margin: 0;">SYSTEM OVERLOAD</h1>
-            <p style="font-size: 1.5rem;">SCORE: <span id="final-score">0</span></p>
-            <button id="restart-btn">REBOOT ENGINE</button>
+    <section class="section" id="pricing" style="background: rgba(0,0,0,0.2);">
+        <h2>Simple Pricing</h2>
+        <div class="grid">
+            <div class="pricing-card">
+                <h3>Basic</h3>
+                <div class="price">$99<span>/mo</span></div>
+                <p>Single Landing Page</p>
+                <p>Basic SEO</p>
+                <p>Email Support</p>
+            </div>
+            <div class="pricing-card featured">
+                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem;">MOST POPULAR</div>
+                <h3>Growth</h3>
+                <div class="price">$299<span>/mo</span></div>
+                <p>5 Page Website</p>
+                <p>Advanced SEO</p>
+                <p>24/7 Priority Support</p>
+            </div>
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">$999<span>/mo</span></div>
+                <p>Full Custom Web App</p>
+                <p>AI Automation</p>
+                <p>Dedicated Account Manager</p>
+            </div>
         </div>
+    </section>
 
-        <canvas id="gameCanvas"></canvas>
-    </div>
+    <section class="section" id="contact">
+        <h2>Start Your Project</h2>
+        <div class="contact-form">
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" placeholder="Enter your name">
+            </div>
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="email@example.com">
+            </div>
+            <div class="input-group">
+                <label>Message</label>
+                <textarea rows="5" placeholder="Tell us about your project..."></textarea>
+            </div>
+            <button class="btn" style="width: 100%; border: none; cursor: pointer;">Send Proposal</button>
+        </div>
+    </section>
 
-    <p class="hint">Tap Screen or Space to Jump</p>
+    <footer>
+        <p>&copy; 2026 Nexus Digital Agency. Built for Performance.</p>
+    </footer>
 
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreEl = document.getElementById('score');
-    const hiScoreEl = document.getElementById('hi-score');
-    const gameOverEl = document.getElementById('game-over');
-    const levelUpEl = document.getElementById('level-up');
-    const finalScoreEl = document.getElementById('final-score');
-    const restartBtn = document.getElementById('restart-btn');
-
-    function resize() {
-        canvas.width = document.getElementById('game-container').clientWidth;
-        canvas.height = 300;
-    }
-    window.onresize = resize;
-    resize();
-
-    let gravity = 0.7;
-    let jumpForce = -13;
-    let score = 0;
-    let hiScore = 0;
-    let isGameOver = false;
-    let obstacles = [];
-    let gameSpeed = 7;
-    let level = 1;
-
-    let dino = { x: 50, y: 0, w: 50, h: 50, dy: 0, jump: false, emoji: "🦖" };
-
-    function spawnObstacle() {
-        if(isGameOver) return;
-        const types = [
-            { e: "🌵", c: "#39ff14" },
-            { e: "⚡", c: "#fff01f" },
-            { e: "🛸", c: "#00f2ff" },
-            { e: "💀", c: "#ff00c1" }
-        ];
-        const t = types[Math.floor(Math.random() * types.length)];
-        obstacles.push({ x: canvas.width, y: canvas.height - 65, w: 45, h: 45, emoji: t.e, color: t.c });
-    }
-
-    function init() {
-        dino.y = canvas.height - dino.h - 10;
-        dino.dy = 0;
-        obstacles = [];
-        score = 0;
-        level = 1;
-        gameSpeed = 7;
-        isGameOver = false;
-        gameOverEl.style.display = "none";
-        document.body.style.background = "#020617";
-        animate();
-    }
-
-    function checkLevelUp() {
-        if (score > 0 && score % 10 === 0) {
-            level++;
-            gameSpeed += 1;
-            levelUpEl.style.display = "block";
-            setTimeout(() => { levelUpEl.style.display = "none"; }, 1000);
-            
-            // Visual Level Up Effect
-            const colors = ["#020617", "#1e1b4b", "#312e81", "#1e293b"];
-            document.body.style.background = colors[level % colors.length];
-        }
-    }
-
-    function animate() {
-        if (isGameOver) return;
-        requestAnimationFrame(animate);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Ground Neon Line
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = "cyan";
-        ctx.strokeStyle = "cyan";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(0, canvas.height - 10);
-        ctx.lineTo(canvas.width, canvas.height - 10);
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-
-        // Dino Physics
-        if (dino.jump) {
-            dino.dy += gravity;
-            dino.y += dino.dy;
-        }
-        if (dino.y + dino.h > canvas.height - 10) {
-            dino.y = canvas.height - dino.h - 10;
-            dino.dy = 0;
-            dino.jump = false;
-        }
-
-        ctx.font = "45px serif";
-        ctx.fillText(dino.emoji, dino.x, dino.y + 42);
-
-        if (Math.random() < 0.012) spawnObstacle();
-
-        obstacles.forEach((obs, index) => {
-            obs.x -= gameSpeed;
-            ctx.font = "40px serif";
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = obs.color;
-            ctx.fillText(obs.emoji, obs.x, obs.y + 40);
-            ctx.shadowBlur = 0;
-
-            // Hitbox check
-            if (dino.x < obs.x + obs.w - 15 && dino.x + dino.w - 15 > obs.x &&
-                dino.y < obs.y + obs.h - 5 && dino.y + dino.h > obs.y + 5) {
-                isGameOver = true;
-                endGame();
-            }
-
-            if (obs.x + obs.w < 0) {
-                obstacles.splice(index, 1);
-                score++;
-                scoreEl.innerText = score;
-                checkLevelUp();
-            }
-        });
-    }
-
-    function endGame() {
-        gameOverEl.style.display = "block";
-        finalScoreEl.innerText = score;
-        if (score > hiScore) {
-            hiScore = score;
-            hiScoreEl.innerText = hiScore;
-        }
-    }
-
-    function handleAction(e) {
-        if (e.type === 'keydown' && e.code !== 'Space') return;
-        if (!dino.jump && !isGameOver) {
-            dino.dy = jumpForce;
-            dino.jump = true;
-        }
-    }
-
-    window.addEventListener('keydown', handleAction);
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleAction(e); });
-    restartBtn.addEventListener('click', init);
-
-    init();
-</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
