@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Typing Animation</title>
+<title>Glowing Typing Animation</title>
 
 <style>
 body {
@@ -12,17 +12,45 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #0f172a;
-  color: #22c55e;
+  background: #020617;
   font-family: monospace;
 }
 
+/* TEXT STYLE */
 h1 {
-  font-size: 2.2em;
-  border-right: 3px solid #22c55e;
-  padding-right: 5px;
+  font-size: 2.5em;
   white-space: nowrap;
   overflow: hidden;
+  border-right: 3px solid white;
+  padding-right: 10px;
+
+  /* GRADIENT TEXT */
+  background: linear-gradient(90deg, #22c55e, #3b82f6, #9333ea, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* GLOW EFFECT */
+  text-shadow: 
+    0 0 5px #22c55e,
+    0 0 10px #3b82f6,
+    0 0 20px #9333ea,
+    0 0 40px #ec4899;
+
+  animation: glow 2s infinite alternate;
+}
+
+/* GLOW ANIMATION */
+@keyframes glow {
+  from {
+    text-shadow:
+      0 0 5px #22c55e,
+      0 0 10px #3b82f6;
+  }
+  to {
+    text-shadow:
+      0 0 20px #9333ea,
+      0 0 40px #ec4899;
+  }
 }
 </style>
 </head>
@@ -34,17 +62,28 @@ h1 {
 <script>
 let text = "Gerardo P. De Vera Jr.";
 let index = 0;
+let isDeleting = false;
 let speed = 100;
 
-function typeEffect() {
-  if (index < text.length) {
-    document.getElementById("typing").innerHTML += text.charAt(index);
+function typeLoop() {
+  let display = text.substring(0, index);
+  document.getElementById("typing").innerHTML = display;
+
+  if (!isDeleting && index < text.length) {
     index++;
-    setTimeout(typeEffect, speed);
+    speed = 100;
+  } else if (isDeleting && index > 0) {
+    index--;
+    speed = 50;
+  } else {
+    isDeleting = !isDeleting;
+    speed = 1000; // pause before typing again
   }
+
+  setTimeout(typeLoop, speed);
 }
 
-typeEffect();
+typeLoop();
 </script>
 
 </body>
