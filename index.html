@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glowing Typing Animation</title>
+<title>Dragon Typing Intro</title>
 
 <style>
 body {
   margin: 0;
   height: 100vh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,47 +17,65 @@ body {
   font-family: monospace;
 }
 
-/* TEXT STYLE */
+/* TYPING TEXT */
 h1 {
+  position: relative;
+  z-index: 2;
   font-size: 2.5em;
-  white-space: nowrap;
-  overflow: hidden;
   border-right: 3px solid white;
   padding-right: 10px;
 
-  /* GRADIENT TEXT */
   background: linear-gradient(90deg, #22c55e, #3b82f6, #9333ea, #ec4899);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
-  /* GLOW EFFECT */
-  text-shadow: 
-    0 0 5px #22c55e,
-    0 0 10px #3b82f6,
-    0 0 20px #9333ea,
-    0 0 40px #ec4899;
+  text-shadow:
+    0 0 10px #22c55e,
+    0 0 20px #3b82f6,
+    0 0 40px #9333ea;
 
   animation: glow 2s infinite alternate;
 }
 
-/* GLOW ANIMATION */
 @keyframes glow {
-  from {
-    text-shadow:
-      0 0 5px #22c55e,
-      0 0 10px #3b82f6;
-  }
-  to {
-    text-shadow:
-      0 0 20px #9333ea,
-      0 0 40px #ec4899;
-  }
+  from { filter: brightness(1); }
+  to { filter: brightness(1.5); }
+}
+
+/* DRAGON SVG */
+.dragon {
+  position: absolute;
+  width: 500px;
+  opacity: 0.6;
+  animation: float 6s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px cyan) drop-shadow(0 0 40px purple);
+}
+
+/* FLOAT ANIMATION */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
 }
 </style>
 </head>
 
 <body>
 
+<!-- DRAGON (SVG STYLE) -->
+<svg class="dragon" viewBox="0 0 200 200">
+  <path d="M50 100 Q80 20 120 100 T180 100"
+        stroke="cyan"
+        stroke-width="3"
+        fill="none">
+    <animate attributeName="stroke-dasharray"
+      values="0,200;200,0"
+      dur="3s"
+      repeatCount="indefinite"/>
+  </path>
+</svg>
+
+<!-- NAME -->
 <h1 id="typing"></h1>
 
 <script>
@@ -77,7 +96,7 @@ function typeLoop() {
     speed = 50;
   } else {
     isDeleting = !isDeleting;
-    speed = 1000; // pause before typing again
+    speed = 1000;
   }
 
   setTimeout(typeLoop, speed);
